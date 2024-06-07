@@ -12,6 +12,6 @@ router.register(r'rate', RateViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
-    # path('register/', ),
-    # path('login/', ),
+    path('register/', UserCreationView.as_view()),
+    path('login/', LoginView.as_view()),
 ]
