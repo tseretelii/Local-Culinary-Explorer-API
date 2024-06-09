@@ -55,3 +55,7 @@ class Rate(models.Model):
     
     class Meta:
         unique_together = ('recipe', 'user')
+
+# class UserHasIngredients(models.Model):
+#     ingredients =   models.ManyToManyField(Ingredients)
+#     user =          models.ForeignKey(User, on_delete=models.CASCADE)

@@ -27,6 +27,8 @@ class RecipeSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class RateSerializer(serializers.ModelSerializer):
+    user = serializers.HiddenField(default = serializers.CurrentUserDefault())
+
     class Meta:
         model = Rate
         fields = '__all__'
