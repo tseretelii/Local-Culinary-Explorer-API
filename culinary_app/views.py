@@ -3,11 +3,12 @@ from rest_framework.views import APIView
 from rest_framework import viewsets
 from .models import *
 from .serializers import *
-from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAdminUser
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAdminUser, IsAuthenticated
 from django.contrib.auth.models import User
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from django.contrib.auth import authenticate, login, logout
+from django.core import serializers
 # Create your views here.
 
 
@@ -40,6 +41,20 @@ class RateViewSet(viewsets.ModelViewSet):
     queryset = Rate.objects.all()
     serializer_class = RateSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
+
+class UserHasIngredientsViewSet(viewsets.ModelViewSet):
+    queryset = UserHasIngredients.objects.all()
+    serializer_class = UserHasIngredientsSerializer
+    permission_classes = [IsAuthenticated]
+
+# class UserSuggestionsViewSet(APIView):
+#     def get(self, request):
+#         user = request.user
+#         Ingredients = serializers.serialize('json', UserHasIngredients.objects.filter(user = user))
+#         Ingredients = Ingredients[0]['ingredients']
+# #        suggestions = serializers.serialize('json', UserSuggestions.objects.filter(user = user))
+
+#         return Response({"suggested-recipes": Ingredients})
 
 
 class UserCreationView(APIView):
