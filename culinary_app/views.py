@@ -54,7 +54,14 @@ class UserHasIngredientsViewSet(viewsets.ModelViewSet):
 #         Ingredients = Ingredients[0]['ingredients']
 # #        suggestions = serializers.serialize('json', UserSuggestions.objects.filter(user = user))
 
-#         return Response({"suggested-recipes": Ingredients})
+#         return Response({"suggested-recipes": Ingredients}) Prefetch
+
+# # Use select_related for single-valued relationships (foreign key, one-to-one)
+# optimized_queryset = MyModel.objects.select_related('relatedmodel').all()
+
+# # Use prefetch_related for multi-valued relationships (many-to-many, reverse foreign key)
+# optimized_queryset = MyModel.objects.prefetch_related('manyrelatedmodel_set').all()
+
 
 
 class UserCreationView(APIView):
