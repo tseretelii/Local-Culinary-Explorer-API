@@ -15,5 +15,5 @@ urlpatterns = [
     path('', include(router.urls)),
     path('register/', UserCreationView.as_view()),
     path('login/', LoginView.as_view()),
-    # path('user-suggestions', UserSuggestionsViewSet.as_view())
+    path('user-suggestions/', UserSuggestionsViewSet.as_view())
 ]

@@ -9,6 +9,8 @@ from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from django.contrib.auth import authenticate, login, logout
 from django.core import serializers
+from django.db.models import Count
+import random
 # Create your views here.
 
 
@@ -47,20 +49,33 @@ class UserHasIngredientsViewSet(viewsets.ModelViewSet):
     serializer_class = UserHasIngredientsSerializer
     permission_classes = [IsAuthenticated]
 
-# class UserSuggestionsViewSet(APIView):
-#     def get(self, request):
-#         user = request.user
-#         Ingredients = serializers.serialize('json', UserHasIngredients.objects.filter(user = user))
-#         Ingredients = Ingredients[0]['ingredients']
-# #        suggestions = serializers.serialize('json', UserSuggestions.objects.filter(user = user))
+class UserSuggestionsViewSet(APIView):
+    def get(self, request):
+        try:
+            user = User.objects.get(username=request.user)
+            user_ingredients = UserHasIngredients.objects.get(user=user).ingredients.all()
+            user_ingredient_ids = user_ingredients.values_list('id', flat=True)
 
-#         return Response({"suggested-recipes": Ingredients}) Prefetch
+            recipes = Recipe.objects.annotate(
+                ingredient_count=Count('ingredients')
+            ).filter(
+                ingredients__in=user_ingredient_ids
+            ).annotate(
+                matched_ingredients=Count('ingredients', filter=models.Q(ingredients__in=user_ingredient_ids))
+            ).filter(
+                ingredient_count=models.F('matched_ingredients')
+            )
 
-# # Use select_related for single-valued relationships (foreign key, one-to-one)
-# optimized_queryset = MyModel.objects.select_related('relatedmodel').all()
+            if recipes.exists():
+                suggested_recipe = random.choice(list(recipes))
+                suggested_recipe_json = serializers.serialize('json', [suggested_recipe])
+                return Response({"suggestion":suggested_recipe_json})
+            else:
+                return Response({"response": "recipe doesn't exist"})
 
-# # Use prefetch_related for multi-valued relationships (many-to-many, reverse foreign key)
-# optimized_queryset = MyModel.objects.prefetch_related('manyrelatedmodel_set').all()
+        except User.DoesNotExist:
+            return Response({"response": "user doesn't exist"})
+
 
 
 
