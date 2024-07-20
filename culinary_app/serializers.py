@@ -27,6 +27,24 @@ class RecipeSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class RateSerializer(serializers.ModelSerializer):
+    user = serializers.HiddenField(default = serializers.CurrentUserDefault())
+
     class Meta:
         model = Rate
         fields = '__all__'
+
+
+class UserHasIngredientsSerializer(serializers.ModelSerializer):
+    user = serializers.HiddenField(default = serializers.CurrentUserDefault())
+
+    class Meta:
+        model = UserHasIngredients
+        fields = '__all__'
+
+
+# class UserSuggestionsSerializer(serializers.ModelSerializer):
+#     user = serializers.HiddenField(serializers.CurrentUserDefault())
+
+#     class Meta:
+#         model = UserSuggestions
+#         fields = '__all__'
